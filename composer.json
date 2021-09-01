@@ -26,7 +26,10 @@
     "laravel": {
       "providers": [
         "Llabbasmkhll\\LaravelZibal\\LaravelZibalServiceProvider"
-      ]
+      ],
+      "aliases": {
+        "zibal": "Llabbasmkhll\\LaravelZibal\\Facades\\Zibal"
+      }
     }
   }
 }
