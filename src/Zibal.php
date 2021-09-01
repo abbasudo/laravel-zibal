@@ -9,7 +9,7 @@ use function PHPUnit\Framework\isEmpty;
 
 class Zibal
 {
-    private $response;
+    private array $response;
 
     public function init(
         int $amount,
@@ -19,7 +19,7 @@ class Zibal
         string $orderId = null,
         string $mobile = null,
         array $allowedCards = [],
-    ) {
+    ): static {
         if ( ! URL::isValidUrl($callback)) {
             $callback = URL::route('redirect', $callback_params);
         }
@@ -51,7 +51,7 @@ class Zibal
         return $this;
     }
 
-    public function verify(int $trackId)
+    public function verify(int $trackId): static
     {
         $data = [
             'merchant' => config('zibal.merchant'),
@@ -60,10 +60,10 @@ class Zibal
 
         $this->response = Http::asJson()->acceptJson()->post('https://gateway.zibal.ir/v1/verify', $data)->json();
 
-        return $this->response;
+        return $this;
     }
 
-    public function validate(int $code = 422)
+    public function validate(int $code = 422): static
     {
         abort_if($this->response['result'] != 100, $code);
 
@@ -72,14 +72,13 @@ class Zibal
 
     public function redirect(int $trackId = null)
     {
-        if ( ! is_null($trackId)) {
+        if ( is_null($trackId)) {
             $trackId = $this->response['trackId'];
         }
-
         return redirect('https://gateway.zibal.ir/start/'.$trackId);
     }
 
-    public function getResponse()
+    public function getResponse(): array
     {
         return $this->response;
     }
