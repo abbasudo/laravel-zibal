@@ -28,7 +28,7 @@
         "Llabbasmkhll\\LaravelZibal\\LaravelZibalServiceProvider"
       ],
       "aliases": {
-        "zibal": "Llabbasmkhll\\LaravelZibal\\Facades\\Zibal"
+        "Zibal": "Llabbasmkhll\\LaravelZibal\\Facades\\Zibal"
       }
     }
   }
