@@ -1,4 +1,5 @@
 <p align="center">
+  <br />
   <a href="https://laravel.com">
     <img src="https://laravel.com/img/logomark.min.svg" alt="Logo" height="80">
   </a>
@@ -47,28 +48,29 @@ note that you only need to do following steps if you want to change merchant id 
    ];
    ```
 
-
-<!-- USAGE EXAMPLES -->
-## Usage
-according to zibals [official documentation](https://docs.zibal.ir/IPG/API)
-there is 3 steps to issue a transaction in zibal
-
-#### 1 . Request
-  in this step zibal gets basic information about the transaction and returns `trackId` that is needed for next step 
-#### 2 . Start 
-  redirect the user to zibals gateway for payment
-#### 3 . Verify
-  you can inspect the status of the transaction in this step (either successful or not)
+<br />
 
 <br />
 
-### code snippets : 
-first include package facade into your file by :
+
+<!-- USAGE EXAMPLES -->
+## Usage
+  
+  first include package facade into your file by :
 ```php
 use Llabbasmkhll\LaravelZibal\Facades\Zibal;
 ```
 
-use this to init the transaction request (first step) :
+<br />
+
+according to zibals [official documentation](https://docs.zibal.ir/IPG/API)
+there is 3 steps to issue a transaction in zibal
+
+### 1 . Request :
+  in this step zibal gets basic information about the transaction and returns `trackId` that is needed for next step 
+
+
+use this to init the transaction request :
 
 ```php
 
@@ -76,7 +78,7 @@ use this to init the transaction request (first step) :
 Zibal::init(
     1000000,            //required amount          - in rial
     'redirect',         //required callback        - can be either route name or a valid url starting with http or https
-    ['key' => 'value'], //optional callback_params - will be passed to callback , works only when route name passed to callback
+    ['key' => 'value'], //optional callback_params - will be passed to callback as query params , works only when route name passed to callback
     'description',      //optional description     - additional data , good for various reports
     123,                //optional orderId         - id of clients order (eg $invoice->id) , will be passed back to callback
     '09366217515',      //optional mobile          - clients mobile number
@@ -85,7 +87,7 @@ Zibal::init(
 
 
 ```
-this will give you an array consist of `result` , `message` and `trackId`
+this will return an array consist of `result` , `message` and `trackId`
 
 `result` represents the request status as below.
 | status | meaning    |
@@ -109,31 +111,84 @@ Zibal::init( $amount, 'redirect')->validate(404)->getResponse();
 this will redirect the user to 404 page if the result code was anything except 100. 
 
 <br />
-
-to redirecting the user to zibals payment page (second step) use  :
+  
+### 2 . Start :
+  redirect the user to zibals gateway for payment
+  use  :
    ```php
    Zibal::redirect($trackId);
    ```
    
 <br />
 
-you may combine first and second step into one line of code like this :
+you may **combine** first and second step into one line of code like this :
    ```php
    Zibal::init( $amount, 'redirect')->validate()->redirect();
    ```
    
+   that will init the transaction , then redirect the user zibals payment page if init was successful , otherwise it will redirect the user to 422 page
+   
 <br />
-
-finally you can use this line of code to verify the transaction status (third step):
+  
+### 3 . Verify :
+you can use this line of code to verify the transaction status:
    ```php
    Zibal::verify($trackId)->validate()->getResponse();
    ```
-   
-<br />
+this will return an array consist of below parameters
+| parameter | discription    |
+|---------|---------------|
+| paidAt    | datetime of the payment |
+| cardNumber    | masked card number that used to pay |
+| status    | status of the payment (discribed below) |
+| amount    | amount of the payment |
+| refNumber    | payment reference number (in case of successful operation) |
+| description    | description of the payment  |
+| orderId    | the same id that you passed in init  |
+| result    | result of the request |
+| message    | short description of the request |
 
 <br />
 
-### example controller : 
+`result` represents the request status as below.
+| code | meaning    |
+|---------|---------------|
+| 100    | successful operation |
+| 102    | merchant not found |
+| 103    | merchant not active |
+| 104    | merchant not valid |
+| 201    | processed before |
+| 202    | payment failed (reason in status) |
+| 203    | invalid trackId |
+
+<br />
+
+`status` represents the request status as below.
+| status | meaning    |
+|---------|---------------|
+| -2    | internal failure |
+| -1    | wating for payment |
+| 1    | paid - verified |
+| 2    | paid - unverified |
+| 3    | canceled by user |
+| 4    | invalid card number |
+| 5    | not enough balance |
+| 6    | invalid code |
+| 7    | maximum request length reached |
+| 8    | maximum daily online payment number reached |
+| 9    | maximum daily online payment amount reached |
+| 10    | invalid card issuer |
+| 11    | switch error |
+| 12    | card unreachable |
+
+
+<br />
+
+<br />
+
+
+<!-- EXAMPLES CONTROLLER -->
+## Example Controller
 
 ```php
 
@@ -201,6 +256,10 @@ class GatewayController extends Controller
 }
 
 ```
+
+<br />
+
+<br />
 
 
 <!-- CONTRIBUTING -->
