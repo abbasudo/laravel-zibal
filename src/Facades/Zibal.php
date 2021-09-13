@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Facade;
  * @method static static validate(int $code = 422)
  * @method static mixed redirect()
  * @method static array getResponse()
- *
  */
 class Zibal extends Facade
 {
