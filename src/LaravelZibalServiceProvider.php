@@ -33,7 +33,7 @@ class LaravelZibalServiceProvider extends ServiceProvider
                 [
                     __DIR__.'/../config/config.php' => config_path('zibal.php'),
                 ],
-                'config'
+                'zibal'
             );
         }
     }

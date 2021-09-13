@@ -18,7 +18,7 @@ class Zibal
         string $description = null,
         string $orderId = null,
         string $mobile = null,
-        array $allowedCards = [],
+        array $allowedCards = []
     ): static {
         if ( ! URL::isValidUrl($callback)) {
             $callback = URL::route('redirect', $callback_params);
@@ -72,9 +72,10 @@ class Zibal
 
     public function redirect(int $trackId = null)
     {
-        if ( is_null($trackId)) {
+        if (is_null($trackId)) {
             $trackId = $this->response['trackId'];
         }
+
         return redirect('https://gateway.zibal.ir/start/'.$trackId);
     }
 
