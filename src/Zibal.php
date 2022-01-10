@@ -4,7 +4,6 @@ namespace Llabbasmkhll\LaravelZibal;
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\URL;
-
 use function PHPUnit\Framework\isEmpty;
 
 class Zibal
@@ -20,7 +19,7 @@ class Zibal
         string $mobile = null,
         array $allowedCards = [],
     ): static {
-        if ( ! URL::isValidUrl($callback)) {
+        if (!URL::isValidUrl($callback)) {
             $callback = URL::route('redirect', $callback_params);
         }
 
@@ -30,19 +29,19 @@ class Zibal
             'callbackUrl' => $callback,
         ];
 
-        if ( ! is_null($description)) {
+        if (!is_null($description)) {
             $data['description'] = $description;
         }
 
-        if ( ! is_null($orderId)) {
+        if (!is_null($orderId)) {
             $data['orderId'] = $orderId;
         }
 
-        if ( ! is_null($mobile)) {
+        if (!is_null($mobile)) {
             $data['mobile'] = $mobile;
         }
 
-        if ( ! isEmpty($allowedCards)) {
+        if (!isEmpty($allowedCards)) {
             $data['allowedCards'] = $allowedCards;
         }
 
@@ -72,9 +71,10 @@ class Zibal
 
     public function redirect(int $trackId = null)
     {
-        if ( is_null($trackId)) {
+        if (is_null($trackId)) {
             $trackId = $this->response['trackId'];
         }
+
         return redirect('https://gateway.zibal.ir/start/'.$trackId);
     }
 
